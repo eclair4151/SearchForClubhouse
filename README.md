@@ -1,5 +1,5 @@
 # Search for Clubhouse
 
-A jailbreak tweak that allowsw you to filter groups by topic in the Clubhouse app
+A jailbreak tweak that allows you to filter groups by topic in the Clubhouse app.
 
-![Demo](demo.gif)
+<img src="demo.gif" width="300" height="533">
