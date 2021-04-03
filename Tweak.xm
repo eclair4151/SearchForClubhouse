@@ -76,13 +76,13 @@ static NSString* currentFilter = @"";
 		NSMutableArray *filteredEvents = [[NSMutableArray alloc] init];
 
 		for (SSServerChannelInFeed *channel in channels) {
-			if([channel.topic containsString:currentFilter]) {
+			if([[channel.topic lowercaseString] containsString:currentFilter]) {
 				[filteredChannels addObject: channel];
 			}
 		}
 
 		for (SSServerEvent *event in events) {
-			if([event.name containsString:currentFilter]) {
+			if([[event.name lowercaseString] containsString:currentFilter]) {
 				[filteredEvents addObject: event];
 			}
 		}
@@ -143,7 +143,7 @@ static NSString* currentFilter = @"";
 	- (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText {
 
 		// update global filter text on every keypress
-		currentFilter = searchText;
+		currentFilter = [searchText lowercaseString];
 
 		// force a table refresh
 		ChannelsTableView *origView= (ChannelsTableView*)self;	
