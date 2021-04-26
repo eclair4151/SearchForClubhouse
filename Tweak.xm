@@ -26,7 +26,7 @@
 
 
 @interface ChannelsTableViewDataSource: NSObject
-	-(void)updateChannels:(NSMutableArray*)channels events:(NSMutableArray*)events;
+	-(void)updateChannels:(NSMutableArray*)channels events:(NSMutableArray*)events featuredEvent:(id)featuredEvent;
 @end
 
 
@@ -56,6 +56,7 @@
 
 static NSMutableArray* channelBackup;
 static NSMutableArray* eventBackup;
+static id featuredEventBackup;
 static NSString* currentFilter = @"";
 
 
@@ -63,11 +64,12 @@ static NSString* currentFilter = @"";
 /////////////// HOOKS ///////////
 
 %hook ChannelsTableViewDataSource
--(void)updateChannels:(NSMutableArray*)channels events:(NSMutableArray*)events {
+-(void)updateChannels:(NSMutableArray*)channels events:(NSMutableArray*)events featuredEvent:(id)featuredEvent {
 	
 	// make a copy of the data before we filter it
 	channelBackup = [[NSMutableArray alloc] initWithArray: channels copyItems:NO];
 	eventBackup = [[NSMutableArray alloc] initWithArray: events copyItems:NO];
+	featuredEventBackup = featuredEvent;
 
 	if (![currentFilter isEqualToString: @""]) {
 
@@ -76,21 +78,21 @@ static NSString* currentFilter = @"";
 		NSMutableArray *filteredEvents = [[NSMutableArray alloc] init];
 
 		for (SSServerChannelInFeed *channel in channels) {
-			if([channel.topic containsString:currentFilter]) {
+			if([[channel.topic lowercaseString] containsString:currentFilter]) {
 				[filteredChannels addObject: channel];
 			}
 		}
 
 		for (SSServerEvent *event in events) {
-			if([event.name containsString:currentFilter]) {
+			if([[event.name lowercaseString] containsString:currentFilter]) {
 				[filteredEvents addObject: event];
 			}
 		}
 
-		%orig(filteredChannels, filteredEvents);
+		%orig(filteredChannels, filteredEvents, featuredEvent);
 	} else {
 		// no filter
-		%orig(channels, events);
+		%orig(channels, events, featuredEvent);
 	}
 
 }
@@ -143,11 +145,11 @@ static NSString* currentFilter = @"";
 	- (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText {
 
 		// update global filter text on every keypress
-		currentFilter = searchText;
+		currentFilter = [searchText lowercaseString];
 
 		// force a table refresh
 		ChannelsTableView *origView= (ChannelsTableView*)self;	
-		[origView.dataSource updateChannels:channelBackup events:eventBackup];
+		[origView.dataSource updateChannels:channelBackup events:eventBackup featuredEvent:featuredEventBackup];
 	}
 
 %end
