@@ -26,7 +26,7 @@
 
 
 @interface ChannelsTableViewDataSource: NSObject
-	-(void)updateChannels:(NSMutableArray*)channels events:(NSMutableArray*)events featuredEvent:(id)featuredEvent;
+	-(void)updateChannels:(NSMutableArray*)channels events:(NSMutableArray*)events featuredEvent:(id)featuredEvent callsToAction:(id)callsToAction;
 @end
 
 
@@ -57,6 +57,7 @@
 static NSMutableArray* channelBackup;
 static NSMutableArray* eventBackup;
 static id featuredEventBackup;
+static id callsToActionBackup;
 static NSString* currentFilter = @"";
 
 
@@ -64,12 +65,13 @@ static NSString* currentFilter = @"";
 /////////////// HOOKS ///////////
 
 %hook ChannelsTableViewDataSource
--(void)updateChannels:(NSMutableArray*)channels events:(NSMutableArray*)events featuredEvent:(id)featuredEvent {
+-(void)updateChannels:(NSMutableArray*)channels events:(NSMutableArray*)events featuredEvent:(id)featuredEvent callsToAction:(id)callsToAction {
 	
 	// make a copy of the data before we filter it
 	channelBackup = [[NSMutableArray alloc] initWithArray: channels copyItems:NO];
 	eventBackup = [[NSMutableArray alloc] initWithArray: events copyItems:NO];
 	featuredEventBackup = featuredEvent;
+	callsToActionBackup = callsToAction;
 
 	if (![currentFilter isEqualToString: @""]) {
 
@@ -89,10 +91,10 @@ static NSString* currentFilter = @"";
 			}
 		}
 
-		%orig(filteredChannels, filteredEvents, featuredEvent);
+		%orig(filteredChannels, filteredEvents, featuredEvent, callsToAction);
 	} else {
 		// no filter
-		%orig(channels, events, featuredEvent);
+		%orig(channels, events, featuredEvent, callsToAction);
 	}
 
 }
@@ -149,7 +151,7 @@ static NSString* currentFilter = @"";
 
 		// force a table refresh
 		ChannelsTableView *origView= (ChannelsTableView*)self;	
-		[origView.dataSource updateChannels:channelBackup events:eventBackup featuredEvent:featuredEventBackup];
+		[origView.dataSource updateChannels:channelBackup events:eventBackup featuredEvent:featuredEventBackup callsToAction:callsToActionBackup];
 	}
 
 %end

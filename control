@@ -1,7 +1,7 @@
 Package: com.shemeshapps.searchforclubhouse
 Name: Search for Clubhouse
 Depends: mobilesubstrate
-Version: 0.0.3
+Version: 0.0.4
 Architecture: iphoneos-arm
 Description: Search for current groups in Clubhouse
 Maintainer: ShemeshApps
