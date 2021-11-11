@@ -1,4 +1,9 @@
-# Search for Clubhouse
+# Search for Clubhouse (Depricated)
+
+## Clubhouse has now natively implemented this feature and this tweak is no longer needed.
+
+
+
 
 A jailbreak tweak that allows you to filter groups by topic in the Clubhouse app.<br><br>
 This tweak can be found on the BigBoss Repo.<br>
