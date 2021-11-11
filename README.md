@@ -1,4 +1,4 @@
-# Search for Clubhouse (Depricated)
+# Search for Clubhouse (Deprecated)
 
 ## Clubhouse has now natively implemented this feature and this tweak is no longer needed.
 
